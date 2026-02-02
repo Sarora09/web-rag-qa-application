@@ -1,0 +1,12 @@
+ipykernel
+langchain-community
+beautifulsoup4
+langchain_text_splitters
+langchain-openai
+faiss-cpu
+langchain
+langchain-core
+langchain-groq
+fastapi
+uvicorn[standard]
+streamlit

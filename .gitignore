@@ -1,0 +1,5 @@
+venv/
+__pycache__/
+.env
+WEB_RAG_QA_APPLICATION.egg-info/
+experiments.ipynb
