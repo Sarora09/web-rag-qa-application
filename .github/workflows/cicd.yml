@@ -33,3 +33,12 @@ jobs:
             --registry ${{ secrets.AZURE_CONTAINER_REGISTRY_NAME }} \
             --image ${{ secrets.IMAGE_NAME }}:${IMAGE_TAG} \
             .
+            
+      # 5. Deploy to Azure Container Apps
+      - name: Deploy to Azure Container App
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          az containerapp update \
+            --name ${{ secrets.AZURE_CONTAINER_APP_NAME }} \
+            --resource-group ${{ secrets.AZURE_CONTAINER_RESOURCE_GROUP }} \
+            --image ${{ secrets.AZURE_CONTAINER_REGISTRY_NAME }}/${{ secrets.IMAGE_NAME }}:${IMAGE_TAG}
