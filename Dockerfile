@@ -20,6 +20,9 @@ COPY . .
 ## Run setup.py
 RUN pip install --no-cache-dir -e .
 
+# Download model during build
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')"
+
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Used PORTS

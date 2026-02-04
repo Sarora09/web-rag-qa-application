@@ -11,3 +11,5 @@ fastapi
 uvicorn[standard]
 streamlit
 supervisor
+langchain-huggingface
+sentence-transformers

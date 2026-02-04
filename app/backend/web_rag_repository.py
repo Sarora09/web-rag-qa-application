@@ -10,6 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from langchain_huggingface import HuggingFaceEmbeddings
 
 load_dotenv()
 
@@ -33,7 +34,9 @@ def setup_database(url) -> str:
     website_document = loader.load()
     text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     website_document_chunks = text_splitter.split_documents(website_document)
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+    embeddings = HuggingFaceEmbeddings(
+        model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    )
     db = FAISS.from_documents(website_document_chunks, embeddings)
     db_name = str(uuid.uuid4())
     faiss_dbs_folder = os.path.join(os.path.dirname(__file__), "faiss_dbs", db_name)
@@ -43,7 +46,9 @@ def setup_database(url) -> str:
     
 
 def fetch_data(query: str, db_name: str) -> str:
-    embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+    embeddings = HuggingFaceEmbeddings(
+        model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    )
     faiss_db_folder = os.path.join(os.path.dirname(__file__), "faiss_dbs", db_name)
     new_faiss_db = FAISS.load_local(faiss_db_folder, embeddings, allow_dangerous_deserialization=True)
     template = """You are an expert research assistant. Use the following pieces of retrieved context to answer the question.
