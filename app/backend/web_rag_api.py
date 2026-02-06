@@ -2,6 +2,7 @@ from app.backend import web_rag_repository
 from app.exception.custom_exception import CustomException
 from app.backend.schema import URLInput, QueryInput, DeleteDb
 from app.backend.middleware import custom_rate_limit_handler, verify_api_key, limiter
+from app.utils.logger import logger
 from fastapi import FastAPI, HTTPException, Request, Header, Depends
 from slowapi.errors import RateLimitExceeded
 import sys
@@ -19,7 +20,7 @@ def is_valid_url(request: Request, body: URLInput) -> dict:
         return {"isvalidurl": is_valid}
     except Exception as e:
         error_detail = CustomException("Internal Server Error", error_details=sys.exc_info())
-        print(error_detail)
+        logger.error(f"Error in is_valid_url: {error_detail}")
         raise HTTPException(status_code=400, detail="Failed to validate URL. Please try again.")
     
 @app.post("/setupdatabase", dependencies=[Depends(verify_api_key)])
@@ -33,7 +34,7 @@ def setup_database(request: Request, body: URLInput) -> dict:
         return {"db_id": db_id}
     except Exception as e:
         error_detail = CustomException("Internal Server Error", error_details=sys.exc_info())
-        print(error_detail)
+        logger.error(f"Error in setup_database: {error_detail}")
         raise HTTPException(status_code=500, detail="Failed to setup database")
 
 @app.post("/fetchdata", dependencies=[Depends(verify_api_key)])
@@ -44,7 +45,7 @@ def fetch_data(request: Request, body: QueryInput) -> dict:
         return {"response": response}
     except Exception as e:
         error_detail = CustomException("Internal Server Error", error_details=sys.exc_info())
-        print(error_detail)
+        logger.error(f"Error in fetch_data: {error_detail}")
         raise HTTPException(status_code=500, detail="Something went wrong. Please come back later.")
     
 @app.post("/cleardb", dependencies=[Depends(verify_api_key)])
@@ -55,5 +56,5 @@ def delete_database(request: Request, body: DeleteDb) -> dict:
         return {"response": response}
     except Exception as e:
         error_detail = CustomException("Internal Server Error", error_details=sys.exc_info())
-        print(error_detail)
+        logger.error(f"Error in delete_database: {error_detail}")
         raise HTTPException(status_code=500, detail="Failed to clear database.")
