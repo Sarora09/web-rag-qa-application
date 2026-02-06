@@ -13,3 +13,4 @@ streamlit
 supervisor
 langchain-huggingface
 sentence-transformers
+slowapi

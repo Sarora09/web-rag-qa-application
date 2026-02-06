@@ -1,7 +1,6 @@
 from urllib.parse import urlparse
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import CharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
 import os
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
@@ -13,8 +12,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_huggingface import HuggingFaceEmbeddings
 
 load_dotenv()
-
-os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY")
 
 def is_valid_url(url: str) -> bool:
     if url is None or url.strip() == "":
