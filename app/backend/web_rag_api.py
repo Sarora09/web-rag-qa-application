@@ -1,11 +1,12 @@
 ## IMPORT ESSENTIAL LIBRARIES
 from app.backend import web_rag_repository
 from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Header, Depends
 from fastapi.responses import JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+import os
 
 app = FastAPI(title="Web RAG QA Implementation")
 
@@ -22,6 +23,13 @@ def custom_rate_limit_handler(request: Request, exc: RateLimitExceeded):
 
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_handler)
 
+# API key verification
+async def verify_api_key(x_api_key: str = Header(None)):
+    if x_api_key is None:
+        raise HTTPException(status_code=401, detail="API key is missing. Please provide x-api-key in header.")
+    if x_api_key != os.getenv("API_KEY"):
+        raise HTTPException(status_code=403, detail="Invalid API key")
+
 class URLInput(BaseModel):
     url: str
 
@@ -32,7 +40,7 @@ class QueryInput(BaseModel):
 class DeleteDb(BaseModel):
     dbname: str
 
-@app.post("/isvalidurl")
+@app.post("/isvalidurl", dependencies=[Depends(verify_api_key)])
 @limiter.limit("5/minute")
 def is_valid_url(request: Request, body: URLInput) -> dict:
     try:
@@ -42,7 +50,7 @@ def is_valid_url(request: Request, body: URLInput) -> dict:
         print(f"Failed to validate url: {e}")
         raise HTTPException(status_code=400, detail="Failed to validate URL. Please try again.")
     
-@app.post("/setupdatabase")
+@app.post("/setupdatabase", dependencies=[Depends(verify_api_key)])
 @limiter.limit("5/minute")
 def setup_database(request: Request, body: URLInput) -> dict:
     try:
@@ -55,7 +63,7 @@ def setup_database(request: Request, body: URLInput) -> dict:
         print(f"Failed to setup database: {e}")
         raise HTTPException(status_code=500, detail="Failed to setup database")
 
-@app.post("/fetchdata")
+@app.post("/fetchdata", dependencies=[Depends(verify_api_key)])
 @limiter.limit("5/minute")
 def fetch_data(request: Request, body: QueryInput) -> dict:
     try:
@@ -65,7 +73,7 @@ def fetch_data(request: Request, body: QueryInput) -> dict:
         print(f"Something went wrong: {e}")
         raise HTTPException(status_code=500, detail="Something went wrong. Please come back later.")
     
-@app.post("/cleardb")
+@app.post("/cleardb", dependencies=[Depends(verify_api_key)])
 @limiter.limit("5/minute")
 def delete_database(request: Request, body: DeleteDb) -> dict:
     try:

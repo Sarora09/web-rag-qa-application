@@ -1,12 +1,16 @@
+from dotenv import load_dotenv
 import streamlit as st
 import requests
 import os
+
+load_dotenv()
 
 # Configure page
 st.set_page_config(page_title="Web RAG QA Application", page_icon="🔍")
 
 # API base URL
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:9999");
+HEADERS = {"x-api-key": os.getenv("API_KEY")}
 
 if "db_id" not in st.session_state:
     st.session_state.db_id = None
@@ -24,7 +28,11 @@ if st.button("Submit", key="submit_url"):
     if url_input:
         with st.spinner("Indexing..."):
             try:
-                response = requests.post(f"{API_BASE_URL}/setupdatabase", json={"url": url_input})
+                response = requests.post(
+                    f"{API_BASE_URL}/setupdatabase", 
+                    json={"url": url_input},
+                    headers=HEADERS
+                )
                 if response.status_code == 200:
                     st.session_state.db_id = response.json()["db_id"]
                     st.session_state.show_success = True
@@ -40,7 +48,6 @@ if st.session_state.db_id:
     if st.session_state.show_success:
         st.success("✅ Database indexed successfully!")
         st.session_state.show_success = False
-    
     st.divider()
     st.subheader("Ask Questions")
     
@@ -55,7 +62,11 @@ if st.session_state.db_id:
     if submit_query and query_input.strip():
         with st.status("Processing your query...", expanded=True):
             try:
-                response = requests.post(f"{API_BASE_URL}/fetchdata", json={"query": query_input, "dbname": st.session_state.db_id})
+                response = requests.post(
+                    f"{API_BASE_URL}/fetchdata", 
+                    json={"query": query_input, "dbname": st.session_state.db_id},
+                    headers=HEADERS
+                )
                 if response.status_code == 200:
                     st.session_state.response_text = response.json()["response"]
                     st.write("✓ Complete")
@@ -69,7 +80,11 @@ if st.session_state.db_id:
     if clear_db:
         with st.status("Clearing database...", expanded=True):
             try:
-                response = requests.post(f"{API_BASE_URL}/cleardb", json={"dbname": st.session_state.db_id})
+                response = requests.post(
+                    f"{API_BASE_URL}/cleardb", 
+                    json={"dbname": st.session_state.db_id},
+                    headers=HEADERS
+                )
                 if response.status_code == 200:
                     st.write("✓ Cleared")
                 else:
