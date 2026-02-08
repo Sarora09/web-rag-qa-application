@@ -3,6 +3,23 @@ import streamlit as st
 import requests
 import os
 
+st.markdown(
+    """
+    <style>
+    header [data-testid="stAppDeployButton"] {display: none !important;}
+    /* Robust: Make all sidebar buttons and their containers 100% width */
+    section[data-testid="stSidebar"] button,
+    section[data-testid="stSidebar"] [data-testid^="baseButton-button"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        margin-bottom: 0.5rem !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 load_dotenv()
 
 # Configure page
