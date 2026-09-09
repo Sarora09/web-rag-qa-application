@@ -6,7 +6,7 @@ with open("requirements.txt") as r:
 setup(
     name = "WEB-RAG-QA-APPLICATION",
     version = "0.1",
-    author = "Sapan",
+    author = "Sarora09",
     packages = find_packages(),
     install_requires = requirements,
 )
