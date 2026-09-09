@@ -3,3 +3,4 @@ __pycache__/
 .env
 WEB_RAG_QA_APPLICATION.egg-info/
 experiments.ipynb
+app/backend/faiss_dbs/
