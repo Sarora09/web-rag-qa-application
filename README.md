@@ -97,10 +97,10 @@ The repository includes a [Dockerfile](Dockerfile) that installs the package, pr
 
 This project uses the Hugging Face model [`sentence-transformers/all-MiniLM-L6-v2`](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2), which is licensed under Apache-2.0.
 
-The repository also depends on third-party Python libraries and services listed in the project configuration files.
+The repository also depends on third-party Python libraries and services listed in the project configuration files. These components are subject to their own licenses and terms.
 
 ## License
 
 © 2026 Sarora09. Built for personal learning and as a portfolio project.
 
-This repository includes third-party software and models subject to their own licenses. See `THIRD_PARTY_NOTICES.md` and the respective project/model pages for details.
+This repository includes third-party software and models subject to their own licenses. See `THIRD_PARTY_NOTICES.md` and the respective project/model pages for additional details.
